@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build-prod": "npm run build",
+    "deploy-prod": "firebase deploy --token 1//07lN699cA7vdcCgYIARAAGAcSNwF-L9Irs-BZD9p4jBHBsrXxerqCGrJILIURDNWQySff9q0QEnoFzhh0rEZRBTqe3mlhs78apsc --only hosting",
+    "bd-ci-cd-prod": "npm run build-prod && npm run deploy-prod",
+    "bd": "npm run bd-ci-cd-prod"
   },
   "private": true,
   "dependencies": {
