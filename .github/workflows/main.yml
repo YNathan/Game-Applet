@@ -35,4 +35,5 @@ jobs:
           npm i -g firebase-tools
       - name: deploy to PRODUCTION !!
         run: |
+          cd game-applet
           npm run bd-ci-cd-prod
