@@ -20,11 +20,14 @@ import { ScorePlus } from './score-plus.class';
   styleUrls: ['./starting-point.component.less'],
 })
 export class StartingPointComponent implements OnInit {
-// get height of the page
-@HostListener("window:resize", [])
+  // get height of the page
+  @HostListener('window:resize', [])
   onResize() {
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
+    this.ctx.canvas.width = window.innerWidth;
+    this.ctx.canvas.height = window.innerHeight;
+    this.loadImages();
   }
 
   @ViewChild('canvas', { static: true }) canvas:
@@ -41,8 +44,8 @@ export class StartingPointComponent implements OnInit {
   private b!: Ball;
   private p: Platform[] = [];
   private item: Item[] = [];
-  private height: number = 500;
-  private width: number = 800;
+  public height: number = window.innerHeight;
+  public width: number = window.innerWidth;
 
   public getScore(): number {
     return this.score;
@@ -94,7 +97,11 @@ export class StartingPointComponent implements OnInit {
   loadImages() {
     // Load city image
     this.city = new Image();
-    this.city.onload = () => {
+    this.city.width = this.width;
+    this.city.height = this.height;
+    this.city.onload = (t) => {
+      //   this.city.width = this.width;
+      // this.city.height = this.height;
       // Image has loaded successfully, proceed with drawing
       this.render();
     };
@@ -103,7 +110,8 @@ export class StartingPointComponent implements OnInit {
       console.error('Error loading image:', error);
     };
     this.city.src = 'assets/images/1.png';
-
+    this.city.width = this.width;
+    this.city.height = this.height;
     // Load other images and sounds if needed
   }
 
@@ -184,7 +192,6 @@ export class StartingPointComponent implements OnInit {
     );
   }
 
-
   update() {
     // Handle ball movement
     this.b.update(this); // Assuming there's an update method in the Ball class
@@ -197,8 +204,10 @@ export class StartingPointComponent implements OnInit {
     // Handle collision detection between the ball and platforms
     this.checkCollision();
 
-    // Update score
-    this.updateScore();
+    if (!this.checkGameOver()) {
+      // Update score
+      this.updateScore();
+    }
 
     // Check for game over condition
     if (this.checkGameOver()) {
@@ -212,9 +221,8 @@ export class StartingPointComponent implements OnInit {
     // For example, you might check if the ball has fallen out of bounds or collided with a specific object
     // Return true if the game is over, false otherwise
     // For demonstration purposes, assume the game is over when the ball falls below a certain y-coordinate
-    return this.b.y > 756;
+    return this.b.y > this.height;
   }
-
 
   updateScore() {
     // Add logic to update the score based on game progress
@@ -222,27 +230,12 @@ export class StartingPointComponent implements OnInit {
     this.score += 1; // Increment the score by 1 for demonstration purposes
   }
 
-
   render() {
-
     // Render game graphics
     if (this.ctx === undefined || !this.canvas || !this.city) return;
-
+    // Set canvas size to match window size
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(
-      0,
-      0,
-      this.canvas.nativeElement.width,
-      this.canvas.nativeElement.height
-    );
-    this.ctx.drawImage(this.city, this.cityX, 0);
-    this.ctx.drawImage(
-      this.city,
-      this.cityX + this.canvas.nativeElement.width,
-      0
-    );
 
     // Clear canvas
     this.ctx.fillStyle = 'rgb(15, 77, 147)';
@@ -261,7 +254,6 @@ export class StartingPointComponent implements OnInit {
       0
     );
 
-    if (!this.ctx) return;
     // Draw platforms
     this.p.forEach((platform) => platform.paint(this.ctx));
 
@@ -282,24 +274,102 @@ export class StartingPointComponent implements OnInit {
     );
     this.ctx.fillStyle = 'rgb(198, 226, 255)';
     this.ctx.fillText(scoreText, this.canvas.nativeElement.width - 150, 50);
-
     // Draw game over screen if game is over
     if (this.gameOver) {
       this.ctx.fillStyle = 'black';
-      this.ctx.fillText('great game applet', 10, 600);
-      this.ctx.fillText('jaco', 225, 265);
-      this.ctx.fillText('jacob', 218, 290);
-      this.ctx.fillText('nathan', 205, 315);
-      this.ctx.fillText('a', 195, 340);
+
+      const tbuttonX = 2;
+      const tbuttonY = window.innerHeight - 30;
+      const tbuttonWidth = 170;
+      const tbuttonHeight = 25;
+      const tcornerRadius = 5;
+
+      this.ctx.fillStyle = 'white';
+      this.roundRect(
+        this.ctx,
+        tbuttonX,
+        tbuttonY,
+        tbuttonWidth,
+        tbuttonHeight,
+        tcornerRadius,
+        true,
+        false
+      );
+      this.ctx.fillStyle = 'grey';
+      this.ctx.font = '14px Arial';
+      this.ctx.fillText('Game by Jacob Nathan', tbuttonX + 4, tbuttonY + 15);
+      // this.ctx.fillText('By Jacob Nathan', tbuttonX , tbuttonY + 30);
+      // this.ctx.fillText('jacob nathan', 218, 290);
+
       // Continue drawing other strings as needed
 
       // Draw play again button
-      this.ctx.strokeStyle = this.mouseIn ? 'red' : 'orange';
+      const buttonX = 270;
+      const buttonY = 310;
+      const buttonWidth = 180;
+      const buttonHeight = 40;
+      const cornerRadius = 10;
+
       this.ctx.fillStyle = this.mouseIn ? 'red' : 'orange';
-      this.ctx.strokeRect(270, 310, 180, 40);
-      this.ctx.fillRect(270, 310, 180, 40);
+      this.roundRect(
+        this.ctx,
+        buttonX,
+        buttonY,
+        buttonWidth,
+        buttonHeight,
+        cornerRadius,
+        true,
+        false
+      );
       this.ctx.fillStyle = 'black';
-      this.ctx.fillText('Play again?', 280, 340);
+      this.ctx.font = '20px Arial';
+      this.ctx.fillText('Play again?', buttonX + 20, buttonY + 28);
+    }
+    this.ctx.stroke();
+  }
+
+  roundRect(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number | { tl: number; tr: number; br: number; bl: number },
+    fill: boolean,
+    stroke: boolean
+  ) {
+    if (typeof stroke === 'undefined') {
+      stroke = true;
+    }
+    if (typeof radius === 'number') {
+      radius = { tl: radius, tr: radius, br: radius, bl: radius };
+    } else {
+      const defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+      for (const side of ['tl', 'tr', 'br', 'bl'] as const) {
+        radius[side] = radius[side] || defaultRadius[side];
+      }
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + radius.tl, y);
+    ctx.lineTo(x + width - radius.tr, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+    ctx.lineTo(x + width, y + height - radius.br);
+    ctx.quadraticCurveTo(
+      x + width,
+      y + height,
+      x + width - radius.br,
+      y + height
+    );
+    ctx.lineTo(x + radius.bl, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+    ctx.lineTo(x, y + radius.tl);
+    ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+    ctx.closePath();
+    if (fill) {
+      ctx.fill();
+    }
+    if (stroke) {
+      ctx.stroke();
     }
   }
 
@@ -365,6 +435,7 @@ export class StartingPointComponent implements OnInit {
   restartGame() {
     // Restart the game
     this.b = new Ball();
+    this.p = [];
     this.score = 0;
     this.levelCheck = 1;
     this.initGame();

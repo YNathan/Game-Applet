@@ -1,5 +1,6 @@
 <!-- starting-point.component.html -->
-<canvas #canvas width="1356" height="756"
+<!-- <div class="city-container" #cityContainer></div> -->
+<canvas #canvas [width]="width" [height]="height"
 (click)="handleMouseClick($event)"
 (window:keydown)="handleKeyPress($event)"
 ></canvas>

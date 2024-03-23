@@ -16,7 +16,7 @@ export class Platform {
     this.x = x;
     this.y = y;
     this.width = 120;
-    this.height = 40;
+    this.height = 80;
     this.dx = -1;
     this.plat = new Image();
     this.plat.src = 'assets/images/platform.png'; // Replace with the actual path to your platform image
