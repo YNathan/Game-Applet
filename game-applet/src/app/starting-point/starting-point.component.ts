@@ -158,6 +158,7 @@ export class StartingPointComponent implements OnInit {
   }
 
   initGame() {
+    this.pictures.playWind();
     this.pictures.playMusic();
     if (!this.canvas) return;
     // Initialize game components

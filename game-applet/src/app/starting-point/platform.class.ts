@@ -1,7 +1,5 @@
-
 import { Ball, BoundingBox } from './ball.class';
 import { Pictures } from './pictures.class';
-
 
 export class Platform {
   dx: number;
@@ -11,6 +9,7 @@ export class Platform {
   height: number;
   plat: HTMLImageElement;
   frame: number = 0;
+  pictures: Pictures = new Pictures();
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -25,10 +24,8 @@ export class Platform {
   update(sp: any, b: Ball): void {
     // Update the frame for animation (if applicable)
     let tester = this.frame + 0.1;
-    if (tester < 3)
-      this.frame += 0.1;
-    else
-      this.frame = 0;
+    if (tester < 3) this.frame += 0.1;
+    else this.frame = 0;
 
     // Move the platform horizontally
     this.x += this.dx;
@@ -43,20 +40,18 @@ export class Platform {
     }
   }
 
-
-
   // Inside Platform class
-getBoundingBox(): BoundingBox {
-  // Calculate and return the bounding box of the platform
-  // The bounding box is represented by an object with properties x, y, width, and height
-  // Adjust the values based on the position and size of your platform
-  return {
-    x: this.x,
-    y: this.y,
-    width: this.width, // Assuming this.width and this.height represent the dimensions of the platform
-    height: this.height
-  };
-}
+  getBoundingBox(): BoundingBox {
+    // Calculate and return the bounding box of the platform
+    // The bounding box is represented by an object with properties x, y, width, and height
+    // Adjust the values based on the position and size of your platform
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width, // Assuming this.width and this.height represent the dimensions of the platform
+      height: this.height,
+    };
+  }
 
   getWidth(): number {
     return this.width;
@@ -86,7 +81,9 @@ getBoundingBox(): BoundingBox {
         b.setDy(newDY);
         // You'll need to handle the sound in Angular's way, possibly using a service
         // For now, let's just log that the bounce sound is played
-        console.log("Bounce sound played");
+        this.pictures.playBounce();
+
+        console.log('Bounce sound played');
       }
     }
   }

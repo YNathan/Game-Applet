@@ -10,8 +10,8 @@ export class Pictures {
   static iaf: HTMLImageElement;
   static sp: StartingPointComponent;
   music: HTMLAudioElement;
-  static wind: HTMLAudioElement;
-  static bounce: HTMLAudioElement;
+  wind: HTMLAudioElement;
+  bounce: HTMLAudioElement;
   static level: number = 1;
   // music: Audio = new Audio;
   constructor() {
@@ -25,8 +25,8 @@ export class Pictures {
 
     // Sounds
     this.music = new Audio(urlJohnWellcome);
-    Pictures.bounce = new Audio(urlBounce);
-    Pictures.wind = new Audio(urlWind);
+    this.bounce = new Audio(urlBounce);
+    this.wind = new Audio(urlWind);
 
     // Images
     Pictures.platform = new Image();
@@ -37,6 +37,26 @@ export class Pictures {
 
     Pictures.gameover = new Image();
     Pictures.gameover.src = urlMe;
+  }
+
+  playBounce() {
+    this.bounce.loop = false; // Set loop to false so it plays once
+    this.bounce.play();
+    // Pause or stop music when it ends
+    this.bounce.addEventListener('ended', () => {
+      this.bounce.pause(); // Pause the music
+      this.bounce.currentTime = 0; // Reset the playback position to the beginning
+    });
+  }
+
+  playWind() {
+    this.wind.loop = false; // Set loop to false so it plays once
+    this.wind.play();
+    // Pause or stop music when it ends
+    this.wind.addEventListener('ended', () => {
+      this.wind.pause(); // Pause the music
+      this.wind.currentTime = 0; // Reset the playback position to the beginning
+    });
   }
 
   // Method to play the music
