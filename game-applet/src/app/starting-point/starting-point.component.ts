@@ -13,6 +13,7 @@ import { GravDown } from './grav-down.class';
 import { AgilUp } from './agil-up.class';
 import { AgilDown } from './agill-down.class';
 import { ScorePlus } from './score-plus.class';
+import { Pictures } from './pictures.class';
 
 @Component({
   selector: 'app-starting-point',
@@ -34,6 +35,7 @@ export class StartingPointComponent implements OnInit {
     | ElementRef<HTMLCanvasElement>
     | undefined;
   private ctx!: CanvasRenderingContext2D;
+  private pictures: Pictures = new Pictures();
   private city?: HTMLImageElement;
   public gameOver: boolean = false;
   private mouseIn: boolean = false;
@@ -67,6 +69,7 @@ export class StartingPointComponent implements OnInit {
     this.loadImages();
     this.initGame();
     this.startGame();
+    this.setupDeviceOrientation();
   }
   cityLoaded: boolean = false;
   // ngAfterViewInit() {
@@ -95,12 +98,25 @@ export class StartingPointComponent implements OnInit {
   // }
 
   loadImages() {
+
+  //   this.ctx;
+  // var imageObj = document.getElementById('img');
+  // imageObj.onload = function(e) {
+  // ctx.canvas.width = imageObj.width;
+  // ctx.canvas.height = imageObj.height;
+
+  //   ctx.drawImage(imageObj, 0, 0,imageObj.width,imageObj.height);
+
+  // };
+  // imageObj.src = 'https://www.google.com/images/srpr/logo4w.png';
     // Load city image
     this.city = new Image();
     this.city.width = this.width;
     this.city.height = this.height;
     this.city.onload = (t) => {
-      //   this.city.width = this.width;
+      this.ctx.canvas.width = this.width;
+      this.ctx.canvas.height = this.height;
+        // this.city.width = this.width;
       // this.city.height = this.height;
       // Image has loaded successfully, proceed with drawing
       this.render();
@@ -109,13 +125,40 @@ export class StartingPointComponent implements OnInit {
       // Image loading failed, handle error
       console.error('Error loading image:', error);
     };
-    this.city.src = 'assets/images/1.png';
+
     this.city.width = this.width;
     this.city.height = this.height;
+    this.city.src = 'assets/images/1.png';
     // Load other images and sounds if needed
+
+  }
+
+
+  setupDeviceOrientation(): void {
+    window.addEventListener('deviceorientation', (event) => {
+      this.handleDeviceOrientation(event);
+    });
+  }
+
+  handleDeviceOrientation(event: DeviceOrientationEvent): void {
+    // Check if gamma value is available
+    if (event.gamma) {
+      // Normalize gamma value between -1 and 1
+      const normalizedGamma = event.gamma / 90; // 90 is a typical maximum value
+
+      // Move the ball left or right based on the normalized gamma value
+      if (normalizedGamma > 0) {
+        // Rotate a bit to the right, move the ball right
+        this.handleKeyPress({ key: 'ArrowRight'} as any);
+      } else {
+        // Rotate a bit to the left, move the ball left
+        this.handleKeyPress({ key: 'ArrowLeft'} as any);
+      }
+    }
   }
 
   initGame() {
+    this.pictures.playMusic();
     if (!this.canvas) return;
     // Initialize game components
     this.b = new Ball();
@@ -247,12 +290,12 @@ export class StartingPointComponent implements OnInit {
     );
 
     // Draw city images
-    this.ctx.drawImage(this.city, this.cityX, 0);
-    this.ctx.drawImage(
-      this.city,
-      this.cityX + this.canvas.nativeElement.width,
-      0
-    );
+    this.ctx.drawImage(this.city, 0, 0, this.width, this.height);
+    // this.ctx.drawImage(
+    //   this.city,
+    //   this.cityX + this.canvas.nativeElement.width,
+    //   0
+    // );
 
     // Draw platforms
     this.p.forEach((platform) => platform.paint(this.ctx));
