@@ -459,6 +459,21 @@ export class StartingPointComponent implements OnInit {
     }
   }
 
+  @HostListener('document:click', ['$event'])
+  windowClick(event: MouseEvent) {
+    const windowWidth = window.innerWidth;
+    const clickX = event.clientX;
+
+    // Check if the click is on the right half of the window
+    if (clickX > windowWidth / 2) {
+      // Move the ball to the right
+      this.handleKeyPress({ key: 'ArrowRight'} as any);
+    } else {
+      // Move the ball to the left
+      this.handleKeyPress({ key: 'ArrowLeft'} as any);
+    }
+  }
+
   handleMouseClick(event: MouseEvent) {
     // Get mouse coordinates
     const mouseX = event.clientX;
