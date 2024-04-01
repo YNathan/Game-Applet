@@ -16,7 +16,8 @@ export class Pictures {
   // music: Audio = new Audio;
   constructor() {
     // URLs for resources
-    const urlJohnWellcome = '/assets/Music/john-ottman--welcome-to-aqualantic.au';
+    const urlJohnWellcome =
+      '/assets/Music/john-ottman--welcome-to-aqualantic.au';
     const urlBounce = '/assets/Music/bounce.au';
     const urlWind = '/assets/Music/wind.au';
     const urlImage2 = '/assets/images/platform.png';
@@ -40,13 +41,17 @@ export class Pictures {
   }
 
   playBounce() {
-    this.bounce.loop = false; // Set loop to false so it plays once
-    this.bounce.play();
-    // Pause or stop music when it ends
-    this.bounce.addEventListener('ended', () => {
-      this.bounce.pause(); // Pause the music
-      this.bounce.currentTime = 0; // Reset the playback position to the beginning
-    });
+    try {
+      this.bounce.loop = false; // Set loop to false so it plays once
+      this.bounce?.play();
+      // Pause or stop music when it ends
+      this.bounce.addEventListener('ended', () => {
+        this.bounce.pause(); // Pause the music
+        this.bounce.currentTime = 0; // Reset the playback position to the beginning
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   playWind() {

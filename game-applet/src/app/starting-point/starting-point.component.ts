@@ -14,6 +14,7 @@ import { AgilUp } from './agil-up.class';
 import { AgilDown } from './agill-down.class';
 import { ScorePlus } from './score-plus.class';
 import { Pictures } from './pictures.class';
+import { AngularFireAnalytics } from '@angular/fire/compat/analytics';
 
 @Component({
   selector: 'app-starting-point',
@@ -62,6 +63,13 @@ export class StartingPointComponent implements OnInit {
   }
   getWidth() {
     return this.width;
+  }
+
+  analytic!: AngularFireAnalytics;
+
+  constructor(private analytics: AngularFireAnalytics) {
+    this.analytic = analytics;
+
   }
   ngOnInit(): void {
     if (!this.canvas) return;
@@ -203,6 +211,7 @@ export class StartingPointComponent implements OnInit {
   }
 
   startGame() {
+    this.analytic.logEvent('start_game', {"score": this.score});
     // Start game loop
     setInterval(() => {
       this.update();
@@ -255,6 +264,7 @@ export class StartingPointComponent implements OnInit {
 
     // Check for game over condition
     if (this.checkGameOver()) {
+      this.analytic.logEvent('game_over', {"score": this.score});
       this.gameOver = true;
       // Additional game over logic (e.g., displaying game over screen)
     }
@@ -492,6 +502,7 @@ export class StartingPointComponent implements OnInit {
   }
 
   restartGame() {
+    this.analytic.logEvent('restart_game', {"score": this.score});
     // Restart the game
     this.b = new Ball();
     this.p = [];

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AngularFireAnalytics } from '@angular/fire/compat/analytics';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'game-applet';
+
+  constructor(analytics: AngularFireAnalytics) {
+    analytics.logEvent('app_open', {"component": "AppComponent"});
+  }
 }
