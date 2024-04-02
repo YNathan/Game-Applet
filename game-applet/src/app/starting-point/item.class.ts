@@ -1,6 +1,6 @@
 
 import { Ball } from './ball.class';
-import { StartingPointComponent } from './starting-point.component'; // Assuming StartingPoint is an Angular component or service
+import { StartingPointComponent } from './starting-point.component';
 
 export class Item {
   private x: number;

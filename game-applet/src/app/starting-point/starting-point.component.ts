@@ -264,7 +264,10 @@ export class StartingPointComponent implements OnInit {
 
     // Check for game over condition
     if (this.checkGameOver()) {
-      this.analytic.logEvent('game_over', {"score": this.score});
+      if(!this.gameOver){
+        this.analytic.logEvent('game_over', {"score": this.score});
+      }
+
       this.gameOver = true;
       // Additional game over logic (e.g., displaying game over screen)
     }
