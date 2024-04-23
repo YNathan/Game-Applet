@@ -165,6 +165,7 @@ export class StartingPointComponent implements OnInit {
     }
   }
 
+  
   initGame() {
     this.pictures.playWind();
     this.pictures.playMusic();
@@ -173,7 +174,8 @@ export class StartingPointComponent implements OnInit {
     this.b = new Ball();
     this.score = 0;
 
-    for (let i = 0; i < 10; i++) {
+    const isMobileLayout = this.width < 500;
+    for (let i = 0; i < (isMobileLayout ? 2 : 10); i++) {
       this.p.push(new Platform(i * 120, 400));
     }
 

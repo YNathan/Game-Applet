@@ -31,7 +31,7 @@ jobs:
       - name: npm install and npm run build
         run: |
           cd game-applet
-          npm i
+          npm i --force --legacy-peer-deps
           npm i -g firebase-tools
       - name: deploy to PRODUCTION !!
         run: |
