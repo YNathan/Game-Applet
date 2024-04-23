@@ -175,7 +175,7 @@ export class StartingPointComponent implements OnInit {
     this.score = 0;
 
     const isMobileLayout = this.width < 500;
-    for (let i = 0; i < (isMobileLayout ? 2 : 10); i++) {
+    for (let i = 0; i < (isMobileLayout ? 3 : 10); i++) {
       this.p.push(new Platform(i * 120, 400));
     }
 
